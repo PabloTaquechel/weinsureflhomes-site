@@ -1,0 +1,98 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-ocean: var(--ocean);
+  --color-sand: var(--sand);
+  --color-clay: var(--clay);
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.5rem;
+  /* Crisp off-white */
+  --background: oklch(0.985 0.004 230);
+  --foreground: oklch(0.18 0.04 240);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.04 240);
+
+  /* Deep navy (We Insure) */
+  --primary: oklch(0.2 0.045 245);
+  --primary-foreground: oklch(0.985 0.004 230);
+
+  --secondary: oklch(0.94 0.012 235);
+  --secondary-foreground: oklch(0.2 0.045 245);
+
+  --muted: oklch(0.95 0.008 235);
+  --muted-foreground: oklch(0.48 0.025 240);
+
+  /* Aqua / cyan accent */
+  --accent: oklch(0.82 0.13 195);
+  --accent-foreground: oklch(0.18 0.04 240);
+
+  --border: oklch(0.9 0.012 235);
+  --ring: oklch(0.82 0.13 195);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.04 240);
+
+  --ocean: oklch(0.2 0.045 245);
+  --sand: oklch(0.94 0.012 235);
+  --clay: oklch(0.82 0.13 195);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
