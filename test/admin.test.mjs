@@ -33,3 +33,9 @@ test("public team endpoint publishes only explicitly published members", async (
   assert.match(publicRoute, /filter\(\(member\) => member\.published\)/);
   assert.match(publicRoute, /cache-control.*no-store/);
 });
+
+test("the public footer links to the protected insurance admin", async () => {
+  const homepage = await read("src/routes/index.tsx");
+  assert.match(homepage, /href="\/admin"/);
+  assert.match(homepage, />\s*Admin\s*<\/a>/);
+});

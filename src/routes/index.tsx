@@ -495,6 +495,13 @@ function Footer() {
           </a>
           .
         </p>
+        <a
+          href="/admin"
+          aria-label="Open insurance site admin"
+          className="inline-flex w-fit items-center justify-center rounded-full border border-primary-foreground/30 px-4 py-2 text-xs font-medium uppercase tracking-widest text-primary-foreground transition hover:bg-primary-foreground hover:text-primary"
+        >
+          Admin
+        </a>
       </div>
     </footer>
   );
