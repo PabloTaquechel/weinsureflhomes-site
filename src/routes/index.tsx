@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import weInsureLogo from "@/assets/we-insure-logo.svg";
 import { QuoteDialog } from "@/components/QuoteDialog";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -64,6 +65,7 @@ function Index() {
       <Hero />
       <Stats />
       <About />
+      <Team />
       <Coverages />
       <Reviews />
       <Contact />
@@ -87,6 +89,9 @@ function Nav() {
           <a href="#coverage" className="hover:text-primary-foreground">
             Coverage
           </a>
+          <a href="#team" className="hover:text-primary-foreground">
+            Team
+          </a>
           <a href="#reviews" className="hover:text-primary-foreground">
             Reviews
           </a>
@@ -106,6 +111,67 @@ function Nav() {
         />
       </div>
     </header>
+  );
+}
+
+type TeamMember = {
+  id: string;
+  name: string;
+  email: string;
+  photoUrl: string;
+};
+
+function Team() {
+  const [members, setMembers] = useState<TeamMember[]>([]);
+
+  useEffect(() => {
+    void fetch("/api/public/team", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : Promise.reject()))
+      .then((data: { members: TeamMember[] }) => setMembers(data.members))
+      .catch(() => undefined);
+  }, []);
+
+  if (members.length === 0) return null;
+  return (
+    <section id="team" className="border-y border-border bg-card">
+      <div className="container-page py-24 md:py-32">
+        <div className="max-w-2xl">
+          <p className="text-xs uppercase tracking-[0.3em] text-accent">Meet the team</p>
+          <h2 className="mt-4 text-4xl leading-tight text-primary md:text-5xl">
+            Real people, ready to help.
+          </h2>
+          <p className="mt-5 text-muted-foreground">
+            A local Miami team who will explain your options clearly and stay with you after the
+            policy is written.
+          </p>
+        </div>
+        <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {members.map((member) => (
+            <article key={member.id}>
+              {member.photoUrl ? (
+                <img
+                  src={member.photoUrl}
+                  alt={`${member.name}, We Insure Miami team member`}
+                  loading="lazy"
+                  className="aspect-[4/5] w-full rounded-2xl object-cover"
+                />
+              ) : (
+                <div className="flex aspect-[4/5] items-center justify-center rounded-2xl bg-secondary font-display text-5xl text-primary">
+                  {member.name.charAt(0)}
+                </div>
+              )}
+              <h3 className="mt-5 text-2xl text-primary">{member.name}</h3>
+              <a
+                href={`mailto:${member.email}`}
+                className="mt-1 inline-block break-all text-sm text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
+              >
+                {member.email}
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 

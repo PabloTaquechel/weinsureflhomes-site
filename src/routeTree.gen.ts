@@ -10,11 +10,31 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ApiAdminSessionRouteImport } from './routes/api/admin/session'
+import { Route as ApiAdminTeamRouteImport } from './routes/api/admin/team'
 import { Route as ApiPublicQuoteRouteImport } from './routes/api/public/quote'
+import { Route as ApiPublicTeamRouteImport } from './routes/api/public/team'
+import { Route as ApiAdminTeamPhotoRouteImport } from './routes/api/admin/team/photo'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminSessionRoute = ApiAdminSessionRouteImport.update({
+  id: '/api/admin/session',
+  path: '/api/admin/session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminTeamRoute = ApiAdminTeamRouteImport.update({
+  id: '/api/admin/team',
+  path: '/api/admin/team',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicQuoteRoute = ApiPublicQuoteRouteImport.update({
@@ -22,31 +42,82 @@ const ApiPublicQuoteRoute = ApiPublicQuoteRouteImport.update({
   path: '/api/public/quote',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicTeamRoute = ApiPublicTeamRouteImport.update({
+  id: '/api/public/team',
+  path: '/api/public/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminTeamPhotoRoute = ApiAdminTeamPhotoRouteImport.update({
+  id: '/photo',
+  path: '/photo',
+  getParentRoute: () => ApiAdminTeamRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/api/admin/session': typeof ApiAdminSessionRoute
+  '/api/admin/team': typeof ApiAdminTeamRouteWithChildren
   '/api/public/quote': typeof ApiPublicQuoteRoute
+  '/api/public/team': typeof ApiPublicTeamRoute
+  '/api/admin/team/photo': typeof ApiAdminTeamPhotoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/api/admin/session': typeof ApiAdminSessionRoute
+  '/api/admin/team': typeof ApiAdminTeamRouteWithChildren
   '/api/public/quote': typeof ApiPublicQuoteRoute
+  '/api/public/team': typeof ApiPublicTeamRoute
+  '/api/admin/team/photo': typeof ApiAdminTeamPhotoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/api/admin/session': typeof ApiAdminSessionRoute
+  '/api/admin/team': typeof ApiAdminTeamRouteWithChildren
   '/api/public/quote': typeof ApiPublicQuoteRoute
+  '/api/public/team': typeof ApiPublicTeamRoute
+  '/api/admin/team/photo': typeof ApiAdminTeamPhotoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/public/quote'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/api/admin/session'
+    | '/api/admin/team'
+    | '/api/public/quote'
+    | '/api/public/team'
+    | '/api/admin/team/photo'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/public/quote'
-  id: '__root__' | '/' | '/api/public/quote'
+  to:
+    | '/'
+    | '/admin'
+    | '/api/admin/session'
+    | '/api/admin/team'
+    | '/api/public/quote'
+    | '/api/public/team'
+    | '/api/admin/team/photo'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/api/admin/session'
+    | '/api/admin/team'
+    | '/api/public/quote'
+    | '/api/public/team'
+    | '/api/admin/team/photo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  ApiAdminSessionRoute: typeof ApiAdminSessionRoute
+  ApiAdminTeamRoute: typeof ApiAdminTeamRouteWithChildren
   ApiPublicQuoteRoute: typeof ApiPublicQuoteRoute
+  ApiPublicTeamRoute: typeof ApiPublicTeamRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +129,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/session': {
+      id: '/api/admin/session'
+      path: '/api/admin/session'
+      fullPath: '/api/admin/session'
+      preLoaderRoute: typeof ApiAdminSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/team': {
+      id: '/api/admin/team'
+      path: '/api/admin/team'
+      fullPath: '/api/admin/team'
+      preLoaderRoute: typeof ApiAdminTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/quote': {
       id: '/api/public/quote'
       path: '/api/public/quote'
@@ -65,12 +157,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicQuoteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/team': {
+      id: '/api/public/team'
+      path: '/api/public/team'
+      fullPath: '/api/public/team'
+      preLoaderRoute: typeof ApiPublicTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/team/photo': {
+      id: '/api/admin/team/photo'
+      path: '/photo'
+      fullPath: '/api/admin/team/photo'
+      preLoaderRoute: typeof ApiAdminTeamPhotoRouteImport
+      parentRoute: typeof ApiAdminTeamRoute
+    }
   }
 }
 
+interface ApiAdminTeamRouteChildren {
+  ApiAdminTeamPhotoRoute: typeof ApiAdminTeamPhotoRoute
+}
+
+const ApiAdminTeamRouteChildren: ApiAdminTeamRouteChildren = {
+  ApiAdminTeamPhotoRoute: ApiAdminTeamPhotoRoute,
+}
+
+const ApiAdminTeamRouteWithChildren = ApiAdminTeamRoute._addFileChildren(
+  ApiAdminTeamRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  ApiAdminSessionRoute: ApiAdminSessionRoute,
+  ApiAdminTeamRoute: ApiAdminTeamRouteWithChildren,
   ApiPublicQuoteRoute: ApiPublicQuoteRoute,
+  ApiPublicTeamRoute: ApiPublicTeamRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

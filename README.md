@@ -25,9 +25,10 @@ npm run build
 
 ## Runtime services
 
-- **Vercel** builds and hosts the application. GitHub pull requests create previews; changes merged into `main` deploy automatically.
+- **Vercel** builds and hosts the application. GitHub pull requests create previews; changes pushed to `main` deploy automatically.
 - **Supabase** stores `quote_requests`. Apply the two SQL files in `supabase/migrations` in filename order to a new project.
 - **Resend** sends quote notifications to `QUOTE_NOTIFICATION_EMAIL`. Verify the sender domain before setting `QUOTE_FROM_EMAIL` in production.
+- **Vercel Blob** stores the published team roster and uploaded team photos.
 
 Required variables:
 
@@ -40,6 +41,13 @@ Required variables:
 | `RESEND_API_KEY`                | Server secret | Sends quote notifications                        |
 | `QUOTE_FROM_EMAIL`              | Server        | Verified Resend sender                           |
 | `QUOTE_NOTIFICATION_EMAIL`      | Server        | Notification recipient                           |
+| `BLOB_READ_WRITE_TOKEN`         | Server secret | Team roster and photo storage                    |
+| `ADMIN_PASSWORD_HASH`           | Server secret | Scrypt password hash; never store plaintext      |
+| `ADMIN_SESSION_SECRET`          | Server secret | Signs eight-hour admin sessions                  |
+
+## Team admin
+
+Open `/admin` on the production site and enter the private password. The initial password is configured only as a server-side scrypt hash in Vercel. Admin sessions use an HttpOnly, Secure, SameSite cookie and all writes require a per-session CSRF token. Photos must be JPG, PNG, or WebP files smaller than 5 MB.
 
 ## Data migration
 
