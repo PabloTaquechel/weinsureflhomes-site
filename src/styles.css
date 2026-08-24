@@ -88,6 +88,14 @@
     font-weight: 400;
     letter-spacing: -0.01em;
   }
+
+  /* Pablo's portrait is served as a normal static asset so Safari/iOS does not
+     have to render the large embedded data URI from the page source. */
+  img[alt^="Pablo Taquechel"],
+  img[alt^="Portrait of Pablo Taquechel"] {
+    content: url("/pablo-taquechel.jpg");
+    object-fit: cover;
+  }
 }
 
 @utility container-page {
