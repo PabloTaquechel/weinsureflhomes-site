@@ -47,7 +47,7 @@ Required variables:
 
 ## Team admin
 
-Open `/admin` on the production site and enter the private password. The initial password is configured only as a server-side scrypt hash in Vercel. Admin sessions use an HttpOnly, Secure, SameSite cookie and all writes require a per-session CSRF token. Photos must be JPG, PNG, or WebP files smaller than 5 MB.
+Open `/admin` on the production site and enter the private password. Set `ADMIN_PASSWORD_HASH` in Vercel to the password directly for the simple setup, or use a `scrypt$...` hash for stronger protection. Admin sessions use an HttpOnly, Secure, SameSite cookie and all writes require a per-session CSRF token. Photos must be JPG, PNG, or WebP files smaller than 5 MB.
 
 ## Data migration
 

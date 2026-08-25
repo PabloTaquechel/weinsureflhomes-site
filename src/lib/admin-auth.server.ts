@@ -37,8 +37,10 @@ function parseCookies(header: string | null) {
 }
 
 export function verifyAdminPassword(password: string) {
-  const [algorithm, salt, expected] = getRequiredSecret("ADMIN_PASSWORD_HASH").split("$");
-  if (algorithm !== "scrypt" || !salt || !expected) return false;
+  const configuredPassword = getRequiredSecret("ADMIN_PASSWORD_HASH");
+  const [algorithm, salt, expected] = configuredPassword.split("$");
+  if (algorithm !== "scrypt") return safeEqual(password, configuredPassword);
+  if (!salt || !expected) return false;
   const actual = scryptSync(password, salt, 32).toString("hex");
   return safeEqual(actual, expected);
 }
