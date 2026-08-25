@@ -22,8 +22,7 @@ const PHONE_HREF = "tel:+13052591910";
 const EMAIL = "pablo.taquechel@weinsuregroup.com";
 const HERO_IMAGE =
   "https://images-listings.century21.com/FL_FKBOR/61/82/78/_P/618278_P00.jpg?format=webp&quality=85&width=1800";
-const PABLO_IMAGE =
-  "https://weinsuregroup.com/wp-content/uploads/2024/07/1596641476_1549890384_WeInsureMiami-Pablo_Taquechel.jpg";
+const PABLO_IMAGE = "/pablo-headshot.jpg";
 
 const coverages = [
   { name: "Home", desc: "Protect what matters most, from roof to foundation." },

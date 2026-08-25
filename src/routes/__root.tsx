@@ -100,13 +100,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       {
         property: "og:image",
-        content:
-          "https://weinsuregroup.com/wp-content/uploads/2024/07/1596641476_1549890384_WeInsureMiami-Pablo_Taquechel.jpg",
+        content: "https://www.weinsureflhomes.com/pablo-headshot.jpg",
       },
       {
         name: "twitter:image",
-        content:
-          "https://weinsuregroup.com/wp-content/uploads/2024/07/1596641476_1549890384_WeInsureMiami-Pablo_Taquechel.jpg",
+        content: "https://www.weinsureflhomes.com/pablo-headshot.jpg",
       },
     ],
     links: [
