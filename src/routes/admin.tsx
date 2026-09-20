@@ -54,7 +54,11 @@ function AdminPage() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ password }),
       });
-      const data = (await response.json()) as { csrfToken?: string; error?: string };
+      const data = (await response.json().catch(() => null)) as {
+        csrfToken?: string;
+        error?: string;
+      } | null;
+      if (!data) throw new Error("The admin service is temporarily unavailable.");
       if (!response.ok || !data.csrfToken) throw new Error(data.error || "Unable to sign in.");
       setPassword("");
       await loadTeam(data.csrfToken);

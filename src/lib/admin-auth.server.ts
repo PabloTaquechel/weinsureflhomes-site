@@ -1,4 +1,4 @@
-import { createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 
 const COOKIE_NAME = "pablo_admin";
 const SESSION_SECONDS = 60 * 60 * 8;
@@ -8,16 +8,24 @@ type AdminSession = {
   csrfToken: string;
 };
 
-function getRequiredSecret(name: "ADMIN_PASSWORD_HASH" | "ADMIN_SESSION_SECRET") {
+function getRequiredSecret(name: "ADMIN_PASSWORD_HASH") {
   const value = process.env[name];
   if (!value) throw new Error(`${name} is not configured.`);
   return value;
 }
 
+function getSessionSigningKey() {
+  return (
+    process.env.ADMIN_SESSION_SECRET ??
+    createHash("sha256")
+      .update("pablo-admin-session-v1\0")
+      .update(getRequiredSecret("ADMIN_PASSWORD_HASH"))
+      .digest()
+  );
+}
+
 function sign(value: string) {
-  return createHmac("sha256", getRequiredSecret("ADMIN_SESSION_SECRET"))
-    .update(value)
-    .digest("base64url");
+  return createHmac("sha256", getSessionSigningKey()).update(value).digest("base64url");
 }
 
 function safeEqual(left: string, right: string) {
