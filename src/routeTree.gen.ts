@@ -11,6 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as HomeInsuranceRenewalChecklistRouteImport } from './routes/home-insurance-renewal-checklist'
+import { Route as HomeownersInsuranceMiamiRouteImport } from './routes/homeowners-insurance-miami'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as WindMitigationInspectionFloridaRouteImport } from './routes/wind-mitigation-inspection-florida'
 import { Route as ApiAdminSessionRouteImport } from './routes/api/admin/session'
 import { Route as ApiAdminTeamRouteImport } from './routes/api/admin/team'
 import { Route as ApiPublicQuoteRouteImport } from './routes/api/public/quote'
@@ -27,6 +31,29 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HomeInsuranceRenewalChecklistRoute =
+  HomeInsuranceRenewalChecklistRouteImport.update({
+    id: '/home-insurance-renewal-checklist',
+    path: '/home-insurance-renewal-checklist',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const HomeownersInsuranceMiamiRoute =
+  HomeownersInsuranceMiamiRouteImport.update({
+    id: '/homeowners-insurance-miami',
+    path: '/homeowners-insurance-miami',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WindMitigationInspectionFloridaRoute =
+  WindMitigationInspectionFloridaRouteImport.update({
+    id: '/wind-mitigation-inspection-florida',
+    path: '/wind-mitigation-inspection-florida',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiAdminSessionRoute = ApiAdminSessionRouteImport.update({
   id: '/api/admin/session',
   path: '/api/admin/session',
@@ -56,6 +83,10 @@ const ApiAdminTeamPhotoRoute = ApiAdminTeamPhotoRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/home-insurance-renewal-checklist': typeof HomeInsuranceRenewalChecklistRoute
+  '/homeowners-insurance-miami': typeof HomeownersInsuranceMiamiRoute
+  '/privacy': typeof PrivacyRoute
+  '/wind-mitigation-inspection-florida': typeof WindMitigationInspectionFloridaRoute
   '/api/admin/session': typeof ApiAdminSessionRoute
   '/api/admin/team': typeof ApiAdminTeamRouteWithChildren
   '/api/public/quote': typeof ApiPublicQuoteRoute
@@ -65,6 +96,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/home-insurance-renewal-checklist': typeof HomeInsuranceRenewalChecklistRoute
+  '/homeowners-insurance-miami': typeof HomeownersInsuranceMiamiRoute
+  '/privacy': typeof PrivacyRoute
+  '/wind-mitigation-inspection-florida': typeof WindMitigationInspectionFloridaRoute
   '/api/admin/session': typeof ApiAdminSessionRoute
   '/api/admin/team': typeof ApiAdminTeamRouteWithChildren
   '/api/public/quote': typeof ApiPublicQuoteRoute
@@ -75,6 +110,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/home-insurance-renewal-checklist': typeof HomeInsuranceRenewalChecklistRoute
+  '/homeowners-insurance-miami': typeof HomeownersInsuranceMiamiRoute
+  '/privacy': typeof PrivacyRoute
+  '/wind-mitigation-inspection-florida': typeof WindMitigationInspectionFloridaRoute
   '/api/admin/session': typeof ApiAdminSessionRoute
   '/api/admin/team': typeof ApiAdminTeamRouteWithChildren
   '/api/public/quote': typeof ApiPublicQuoteRoute
@@ -86,6 +125,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/home-insurance-renewal-checklist'
+    | '/homeowners-insurance-miami'
+    | '/privacy'
+    | '/wind-mitigation-inspection-florida'
     | '/api/admin/session'
     | '/api/admin/team'
     | '/api/public/quote'
@@ -95,6 +138,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/home-insurance-renewal-checklist'
+    | '/homeowners-insurance-miami'
+    | '/privacy'
+    | '/wind-mitigation-inspection-florida'
     | '/api/admin/session'
     | '/api/admin/team'
     | '/api/public/quote'
@@ -104,6 +151,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/home-insurance-renewal-checklist'
+    | '/homeowners-insurance-miami'
+    | '/privacy'
+    | '/wind-mitigation-inspection-florida'
     | '/api/admin/session'
     | '/api/admin/team'
     | '/api/public/quote'
@@ -114,6 +165,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  HomeInsuranceRenewalChecklistRoute: typeof HomeInsuranceRenewalChecklistRoute
+  HomeownersInsuranceMiamiRoute: typeof HomeownersInsuranceMiamiRoute
+  PrivacyRoute: typeof PrivacyRoute
+  WindMitigationInspectionFloridaRoute: typeof WindMitigationInspectionFloridaRoute
   ApiAdminSessionRoute: typeof ApiAdminSessionRoute
   ApiAdminTeamRoute: typeof ApiAdminTeamRouteWithChildren
   ApiPublicQuoteRoute: typeof ApiPublicQuoteRoute
@@ -134,6 +189,34 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home-insurance-renewal-checklist': {
+      id: '/home-insurance-renewal-checklist'
+      path: '/home-insurance-renewal-checklist'
+      fullPath: '/home-insurance-renewal-checklist'
+      preLoaderRoute: typeof HomeInsuranceRenewalChecklistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/homeowners-insurance-miami': {
+      id: '/homeowners-insurance-miami'
+      path: '/homeowners-insurance-miami'
+      fullPath: '/homeowners-insurance-miami'
+      preLoaderRoute: typeof HomeownersInsuranceMiamiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wind-mitigation-inspection-florida': {
+      id: '/wind-mitigation-inspection-florida'
+      path: '/wind-mitigation-inspection-florida'
+      fullPath: '/wind-mitigation-inspection-florida'
+      preLoaderRoute: typeof WindMitigationInspectionFloridaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/admin/session': {
@@ -189,6 +272,10 @@ const ApiAdminTeamRouteWithChildren = ApiAdminTeamRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  HomeInsuranceRenewalChecklistRoute: HomeInsuranceRenewalChecklistRoute,
+  HomeownersInsuranceMiamiRoute: HomeownersInsuranceMiamiRoute,
+  PrivacyRoute: PrivacyRoute,
+  WindMitigationInspectionFloridaRoute: WindMitigationInspectionFloridaRoute,
   ApiAdminSessionRoute: ApiAdminSessionRoute,
   ApiAdminTeamRoute: ApiAdminTeamRouteWithChildren,
   ApiPublicQuoteRoute: ApiPublicQuoteRoute,

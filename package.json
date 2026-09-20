@@ -5,12 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "vite build && tsc --noEmit && node --test",
     "build:dev": "vite build --mode development",
     "typecheck": "tsc --noEmit",
     "start": "node .output/server/index.mjs",
     "preview": "vite preview",
     "test": "node --test",
+    "seo:audit": "node scripts/seo-audit.mjs",
+    "seo:verify": "node scripts/seo-verify.mjs",
+    "seo:metrics": "node scripts/seo-metrics.mjs",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

@@ -2,18 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import weInsureLogo from "@/assets/we-insure-logo.svg";
 import { QuoteDialog } from "@/components/QuoteDialog";
 import { useEffect, useState } from "react";
+import { agencySchema, seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Pablo Taquechel — Miami Insurance Agent | We Insure Miami" },
-      {
-        name: "description",
-        content:
-          "Home, auto, flood and business insurance in Miami. 15+ years of personal, trusted service from Pablo Taquechel and the We Insure Miami team.",
-      },
-    ],
-  }),
+  head: () =>
+    seoHead(
+      "Miami Home Insurance Agent | Pablo Taquechel · We Insure",
+      "Explore home, flood, condo and other insurance options with Pablo Taquechel's Miami team. Request a no-obligation quote or call (305) 259-1910.",
+      "/",
+    ),
   component: Index,
 });
 
@@ -60,14 +57,34 @@ const reviews = [
 function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(agencySchema).replace(/</g, "\\u003c") }}
+      />
       <Nav />
-      <Hero />
-      <Stats />
-      <About />
-      <Team />
-      <Coverages />
-      <Reviews />
-      <Contact />
+      <main>
+        <Hero />
+        <Stats />
+        <section className="container-page py-16">
+          <h2 className="text-4xl text-primary">Start with the right questions about your home.</h2>
+          <p className="mt-5 max-w-2xl text-muted-foreground">
+            Buying in Miami, reviewing your renewal, or exploring a new policy? Get help comparing
+            available home insurance options, understanding deductibles and asking about separate
+            flood coverage.
+          </p>
+          <a
+            href="/homeowners-insurance-miami"
+            className="mt-6 inline-block font-medium text-primary underline underline-offset-4"
+          >
+            Explore Miami homeowners insurance →
+          </a>
+        </section>
+        <About />
+        <Coverages />
+        <Reviews />
+        <Contact />
+        <Team />
+      </main>
       <Footer />
     </div>
   );
@@ -82,6 +99,9 @@ function Nav() {
           <span className="font-display text-2xl leading-none">Pablo Taquechel</span>
         </a>
         <nav className="hidden gap-8 text-sm text-primary-foreground/85 md:flex">
+          <a href="/homeowners-insurance-miami" className="hover:text-primary-foreground">
+            Home insurance
+          </a>
           <a href="#about" className="hover:text-primary-foreground">
             About
           </a>
@@ -182,6 +202,7 @@ function Hero() {
         alt="Mid-century Miami home at golden hour framed by palm trees"
         width={1600}
         height={1100}
+        fetchPriority="high"
         className="absolute inset-0 -z-10 h-full w-full object-cover"
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-primary/80 via-primary/55 to-primary/85" />
@@ -190,13 +211,13 @@ function Hero() {
           We Insure Florida · Since 2010
         </p>
         <h1 className="mt-6 max-w-3xl text-5xl leading-[1.05] text-primary-foreground md:text-7xl">
-          Florida insurance,
+          Miami home insurance,
           <br />
           <em className="font-display italic text-accent">tailored to your life.</em>
         </h1>
         <p className="mt-6 max-w-xl text-lg text-primary-foreground/80">
-          For 15+ years, Pablo Taquechel has helped Miami families and businesses choose coverage
-          from the country's top-rated carriers — with the calm, personal service of a neighbor.
+          Compare available home insurance options with Pablo Taquechel and the We Insure Miami
+          team. Local guidance for your home, flood coverage, auto and business needs.
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <QuoteDialog
@@ -326,9 +347,17 @@ function Coverages() {
             >
               <div className="font-display text-2xl text-primary">{c.name}</div>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{c.desc}</p>
-              <span className="mt-6 inline-block text-xs uppercase tracking-widest text-accent opacity-0 transition group-hover:opacity-100">
-                Request quote →
-              </span>
+              <QuoteDialog
+                initialType={c.name}
+                trigger={
+                  <button
+                    type="button"
+                    className="mt-6 text-xs uppercase tracking-widest text-primary underline underline-offset-4"
+                  >
+                    Request {c.name.toLowerCase()} quote →
+                  </button>
+                }
+              />
             </article>
           ))}
         </div>
@@ -482,6 +511,9 @@ function Footer() {
     <footer className="bg-primary text-primary-foreground/70">
       <div className="container-page flex flex-col gap-4 border-t border-primary-foreground/15 py-8 text-sm md:flex-row md:items-center md:justify-between">
         <p>© {new Date().getFullYear()} Pablo Taquechel · We Insure Miami</p>
+        <a href="/privacy" className="underline underline-offset-4">
+          Privacy
+        </a>
         <p>
           An independent agency of{" "}
           <a

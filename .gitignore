@@ -1,4 +1,6 @@
 # Logs
+.seo/private/
+.seo/credentials/
 logs
 *.log
 npm-debug.log*

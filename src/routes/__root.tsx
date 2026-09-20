@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@/components/Analytics";
+import measurement from "@/config/measurement.json";
 
 function NotFoundComponent() {
   return (
@@ -84,6 +86,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Personalized home, auto, flood and business insurance in Miami from Pablo Taquechel. 15+ years of trusted local expertise.",
       },
       { name: "author", content: "Pablo Taquechel" },
+      ...(measurement.searchConsoleVerification
+        ? [{ name: "google-site-verification", content: measurement.searchConsoleVerification }]
+        : []),
       { property: "og:title", content: "Pablo Taquechel — Insurance Agent | We Insure" },
       {
         property: "og:description",
@@ -144,6 +149,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <Analytics />
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
