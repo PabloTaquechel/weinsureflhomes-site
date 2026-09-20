@@ -1,6 +1,8 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { createSign } from "node:crypto";
 import { pathToFileURL } from "node:url";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import { fetchWithRetry } from "./seo-audit.mjs";
 
 const scopes =
@@ -42,16 +44,21 @@ export async function collectMetrics() {
   const config = JSON.parse(
     await readFile(new URL("../src/config/measurement.json", import.meta.url), "utf8"),
   );
-  if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-    throw new Error(
-      "Metrics unavailable: configure GOOGLE_APPLICATION_CREDENTIALS with a read-only Google service account. Missing metrics are NOT zero traffic.",
-    );
-  }
   if (!/^\d+$/.test(config.ga4PropertyId))
     throw new Error("Metrics unavailable: GA4 property ID is missing or invalid");
-  const credentials = JSON.parse(
-    await readFile(process.env.GOOGLE_APPLICATION_CREDENTIALS, "utf8"),
-  );
+  // Use a task-specific location outside the OneDrive-synced repository.
+  // Never search unrelated Google identities or credential stores.
+  const credentialPath =
+    process.env.GOOGLE_APPLICATION_CREDENTIALS ||
+    join(homedir(), ".codex", "private", "weinsure-seo", "google-service-account.json");
+  let credentials;
+  try {
+    credentials = JSON.parse(await readFile(credentialPath, "utf8"));
+  } catch {
+    throw new Error(
+      "Metrics unavailable: the task-specific read-only Google service account is not configured. Missing metrics are NOT zero traffic.",
+    );
+  }
   if (!credentials.client_email || !credentials.private_key)
     throw new Error("Invalid service account configuration");
   const token = await tokenFor(credentials);
