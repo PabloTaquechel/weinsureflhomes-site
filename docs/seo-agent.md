@@ -26,11 +26,13 @@ Never buy ads/links/tools, invent reviews, contact leads or partners, create bul
 
 ## Report to owner
 
+Use `generate_home_lead` as the primary confirmed home-request metric. `generate_lead` includes all coverage types, including Home: never sum them or call all-coverage leads homeowner leads. `call_click` remains a separate micro-conversion, not a confirmed home inquiry. Both successful-request events are sent only after the quote API confirms storage. Event counts are not deduplicated people, qualified leads or policies bound. The initial implementation changed measurement on September 20, 2026; don't interpret the pre-instrumentation period as observed zero conversions.
+
 Keep routine output brief: what changed (or why nothing changed), whether deployment is verified, observed organic traffic and lead counts with date window, and any action required. Stay quiet for unchanged non-actionable state. Alert on material access expiry, technical failure or a real approval blocker. Never claim guaranteed ranking improvements or fully autonomous cloud execution: desktop runs depend on the computer/Codex being available. Google access and account security steps may require the owner.
 
 ## Connection setup (one time, separate from recurring SEO edits)
 
-- GA4 public measurement ID is safe in site code; property ID identifies reports. Mark `generate_lead` as a key event when allowed. Do not mark `call_click` as a qualified lead.
+- GA4 public measurement ID is safe in site code; property ID identifies reports. Mark `generate_home_lead` as the primary homeowner key event when allowed, retaining `generate_lead` as the all-coverage comparison. Do not sum them or mark `call_click` as a qualified lead.
 - Search Console URL-prefix property is `https://www.weinsureflhomes.com/`. Keep the verification meta tag permanently; verify ownership and submit `sitemap.xml` in the account.
 - Durable no-Windsor reporting: create a task-specific Google service account in an owner-controlled Cloud project with Analytics Data API and Search Console API enabled, no billing required for this setup. Grant only Viewer on this GA4 property and Restricted on this Search Console property. Credential creation/access grants require the owner's security confirmation. Store the JSON at `.codex/private/weinsure-seo/google-service-account.json` under the user's profile, outside git and OneDrive, or expose another task-specific private path through `GOOGLE_APPLICATION_CREDENTIALS`. Never install the private credential in Vercel's public bundle.
 - Run the collector and inspect its metadata before marking reporting connected. Empty real reports after a new install are expected; “no data yet” is distinct from “permission denied.” If API configuration cannot be completed, record it as a remaining dependency, not done.

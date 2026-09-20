@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { sendQuoteRequest } from "../src/lib/quote-client.ts";
+import { confirmedQuoteEvents, sendQuoteRequest } from "../src/lib/quote-client.ts";
 
 const payload = {
   first_name: "Test",
@@ -11,6 +11,14 @@ const payload = {
   insurance_type: "Home",
   notes: null,
 };
+test("home request tracking distinguishes the homeowner subset", () => {
+  assert.deepEqual(confirmedQuoteEvents("Home"), ["generate_lead", "generate_home_lead"]);
+});
+test("other coverage types never count as home insurance requests", () => {
+  for (const type of ["Auto", "Flood", "Condo", "Renters", "Business", "Boat & RV", "unknown"]) {
+    assert.deepEqual(confirmedQuoteEvents(type), ["generate_lead"]);
+  }
+});
 test("quote client confirms a stored request with a local mock (never network)", async () => {
   let calls = 0;
   await sendQuoteRequest(payload, async (url, request) => {

@@ -10,7 +10,8 @@ const publicPaths = new Set([
   "/wind-mitigation-inspection-florida",
   "/privacy",
 ]);
-type EventName = "quote_form_open" | "quote_form_start" | "generate_lead" | "call_click";
+type EventName =
+  "quote_form_open" | "quote_form_start" | "generate_lead" | "generate_home_lead" | "call_click";
 
 declare global {
   interface Window {

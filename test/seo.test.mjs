@@ -48,7 +48,7 @@ test("analytics does not load until configured and consented", async () => {
 test("successful quote event is gated by confirmed API response", async () => {
   const source = await readFile("src/components/QuoteDialog.tsx", "utf8");
   const successGuard = source.indexOf("await sendQuoteRequest(payload)");
-  const conversion = source.indexOf('trackEvent("generate_lead")');
+  const conversion = source.indexOf("confirmedQuoteEvents(payload.insurance_type)");
   assert.ok(successGuard >= 0 && conversion > successGuard);
   assert.match(source, /if \(sending.current\) return/);
   assert.doesNotMatch(source, /name="title_holders"/);

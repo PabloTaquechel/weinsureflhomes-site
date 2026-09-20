@@ -9,7 +9,7 @@ Start with Miami, where the agency has a real office and local experience. Do no
 ## Measurement
 
 - Search Console: indexed pages, impressions, clicks, CTR and average position, segmented by page and query. Distinguish branded searches (Pablo/We Insure) from homeowner-intent discovery. Query detail omits anonymized searches; retain property-level totals separately.
-- GA4: organic landing-page sessions and engaged sessions; quote opens, starts and confirmed `generate_lead` events; `call_click` separately. Call clicks are not completed calls. Consent and blocking mean GA4 is not a count of every visitor.
+- GA4: organic landing-page sessions and engaged sessions; quote opens and starts; confirmed `generate_home_lead` for Home requests and `generate_lead` for all coverage types. Home requests are a subset: never add those two event counts together. Track `call_click` separately; call clicks are not completed calls. Consent and blocking mean GA4 is not a count of every visitor. No custom dimension is needed to read these distinct event names.
 - Business outcome: qualified homeowner inquiries, quotes delivered and policies bound. These require agency/CRM feedback; do not call a form submission a qualified lead or claim a sale without evidence. Do not export customer records into the public repository.
 - Compare complete 28-day windows with the most recent three days excluded; supplement with 90-day trends and year-over-year data once it exists. Account for storms, seasonality, carrier availability, consent changes and tracking changes.
 - Baseline is unavailable until measurement is installed and account access works. Unavailable is not zero. The first few weeks are for collection and indexation, not declaring winners.

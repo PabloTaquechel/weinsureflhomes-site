@@ -8,6 +8,13 @@ export type QuotePayload = {
   notes: string | null;
 };
 
+export function confirmedQuoteEvents(insuranceType: string) {
+  // Home requests are a subset of all requests; reports must never add these counts together.
+  return insuranceType === "Home"
+    ? (["generate_lead", "generate_home_lead"] as const)
+    : (["generate_lead"] as const);
+}
+
 export async function sendQuoteRequest(payload: QuotePayload, fetcher: typeof fetch = fetch) {
   // No automatic retry of a valid lead: a timeout could occur after the server stored it.
   const response = await fetcher("/api/public/quote", {

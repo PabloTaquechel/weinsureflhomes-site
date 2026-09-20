@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trackEvent } from "@/lib/analytics";
-import { sendQuoteRequest } from "@/lib/quote-client";
+import { confirmedQuoteEvents, sendQuoteRequest } from "@/lib/quote-client";
 
 const INSURANCE_TYPES = ["Home", "Flood", "Auto", "Condo", "Renters", "Business", "Boat & RV"];
 
@@ -52,7 +52,7 @@ export function QuoteDialog({
     setError("");
     try {
       await sendQuoteRequest(payload);
-      trackEvent("generate_lead");
+      for (const eventName of confirmedQuoteEvents(payload.insurance_type)) trackEvent(eventName);
       setSubmitted(true);
     } catch {
       setError(

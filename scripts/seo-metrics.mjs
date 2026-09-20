@@ -110,7 +110,13 @@ export async function collectMetrics() {
               filter: {
                 fieldName: "eventName",
                 inListFilter: {
-                  values: ["generate_lead", "quote_form_open", "quote_form_start", "call_click"],
+                  values: [
+                    "generate_lead",
+                    "generate_home_lead",
+                    "quote_form_open",
+                    "quote_form_start",
+                    "call_click",
+                  ],
                 },
               },
             },
