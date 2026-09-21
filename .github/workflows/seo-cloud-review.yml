@@ -19,7 +19,9 @@ jobs:
     timeout-minutes: 10
     outputs:
       due: ${{ steps.cadence.outputs.due }}
-      status: ${{ steps.report.outputs.status }}
+      health: ${{ steps.report.outputs.health }}
+      analytics: ${{ steps.report.outputs.analytics }}
+      searchConsole: ${{ steps.report.outputs.searchConsole }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -47,16 +49,16 @@ jobs:
     steps:
       - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         env:
-          REPORT_STATUS: ${{ needs.report.outputs.status }}
+          REPORT_HEALTH: ${{ needs.report.outputs.health }}
+          REPORT_ANALYTICS: ${{ needs.report.outputs.analytics }}
+          REPORT_SEARCH_CONSOLE: ${{ needs.report.outputs.searchConsole }}
         with:
           script: |
             const title = 'Cloud SEO reporting needs attention';
             const allowed = new Set(['available', 'access_denied', 'rate_limited', 'unavailable']);
-            let input = {};
-            try { input = JSON.parse(process.env.REPORT_STATUS || '{}'); } catch {}
-            const health = input.health === 'passed' ? 'passed' : 'failed';
-            const analytics = allowed.has(input.analytics) ? input.analytics : 'unavailable';
-            const searchConsole = allowed.has(input.searchConsole) ? input.searchConsole : 'unavailable';
+            const health = process.env.REPORT_HEALTH === 'passed' ? 'passed' : 'failed';
+            const analytics = allowed.has(process.env.REPORT_ANALYTICS) ? process.env.REPORT_ANALYTICS : 'unavailable';
+            const searchConsole = allowed.has(process.env.REPORT_SEARCH_CONSOLE) ? process.env.REPORT_SEARCH_CONSOLE : 'unavailable';
             // GitHub may disable public-repo schedules after 60 inactive days.
             // Warn before that deadline; do not silently manufacture keepalive commits.
             const repo = await github.rest.repos.get(context.repo);

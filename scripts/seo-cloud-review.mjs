@@ -52,14 +52,19 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     console.log(due ? "Cloud review is due." : "Between biweekly review dates; skipped.");
   } else {
     const result = await cloudReview();
-    if (process.env.GITHUB_OUTPUT)
-      await appendFile(process.env.GITHUB_OUTPUT, `status=${JSON.stringify(result)}\n`);
+    // Multiline JSON credentials can cause GitHub to mask standalone braces.
+    // Transfer fixed enum labels individually, never as a JSON job output.
+    const statusLines =
+      Object.entries(result)
+        .map(([key, value]) => `${key}=${value}`)
+        .join("\n") + "\n";
+    if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, statusLines);
     if (process.env.GITHUB_STEP_SUMMARY)
       await appendFile(
         process.env.GITHUB_STEP_SUMMARY,
         `## Cloud SEO reporting\n\n- Production health: ${result.health}\n- Analytics: ${result.analytics}\n- Search Console: ${result.searchConsole}\n- Automatic SEO edits: disabled pending AI setup\n\nPrivate reports remain in runner memory only. Missing access is not zero traffic.\n`,
       );
-    console.log(JSON.stringify(result));
+    console.log(statusLines.trim());
     if (
       result.health !== "passed" ||
       result.analytics !== "available" ||

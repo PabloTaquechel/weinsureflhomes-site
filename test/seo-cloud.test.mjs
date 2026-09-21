@@ -104,6 +104,8 @@ test("cloud reporting is main-only, no pull requests, no raw artifacts or write-
   assert.match(workflow, /github.ref == 'refs\/heads\/main'/);
   assert.match(workflow, /persist-credentials: false/);
   assert.match(workflow, /timezone: America\/New_York/);
+  assert.match(workflow, /REPORT_ANALYTICS: \$\{\{ needs.report.outputs.analytics \}\}/);
+  assert.doesNotMatch(workflow, /REPORT_STATUS|outputs.status/);
   assert.doesNotMatch(
     workflow,
     /pull_request:|pull_request_target:|contents: write|upload-artifact|npm ci/,
