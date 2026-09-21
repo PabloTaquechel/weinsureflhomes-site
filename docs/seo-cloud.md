@@ -49,8 +49,9 @@ Do not run this workflow against pull-request code or use `pull_request_target`.
 ## Alerts and realistic reliability
 
 A connection or health failure fails the reporting job and creates/updates one
-`Cloud SEO reporting needs attention` issue. Unchanged failures do not create
-duplicate issues or comments. Recovery closes it with a verified-run link.
+`Cloud SEO reporting needs attention` issue assigned to the repository owner.
+Changed status gets one comment; unchanged failures do not create duplicate issues
+or comments. Recovery closes it with a verified-run link.
 Unexpected runner failures also create a generic attention issue when the notification
 job can execute. Delivery of GitHub emails/push alerts depends on the owner's
 GitHub notification settings; no email-delivery claim is made.

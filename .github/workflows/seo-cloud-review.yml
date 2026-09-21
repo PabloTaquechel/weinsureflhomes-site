@@ -76,6 +76,8 @@ jobs:
               }
             } else if (!existing || !existing.body?.includes(fingerprint)) {
               const body = `${fingerprint}\nCloud reporting requires attention.\n\n- Production health: ${health}\n- Analytics: ${analytics}\n- Search Console: ${searchConsole}\n- Schedule inactivity warning: ${scheduleWarning ? 'Review required: GitHub can disable public-repository schedules after 60 inactive days.' : 'none'}\n\nNo SEO changes were published. Missing reports are not zero traffic. AI editing remains disabled pending separate setup.\n\n[Inspect run](${url})`;
-              if (existing) await github.rest.issues.update({...context.repo, issue_number: existing.number, body});
-              else await github.rest.issues.create({...context.repo, title, body});
+              if (existing) {
+                await github.rest.issues.update({...context.repo, issue_number: existing.number, body, assignees: [context.repo.owner]});
+                await github.rest.issues.createComment({...context.repo, issue_number: existing.number, body: `Status changed: health ${health}; Analytics ${analytics}; Search Console ${searchConsole}; schedule warning ${scheduleWarning}. [Verified run](${url}).`});
+              } else await github.rest.issues.create({...context.repo, title, body, assignees: [context.repo.owner]});
             }
