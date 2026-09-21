@@ -1,5 +1,26 @@
 # SEO experiment and deployment log
 
+## 2026-09-21 — Free cloud reporting migration (not a performance experiment)
+
+- Owner requested operation without a running computer, approved encrypted GitHub
+  storage of the existing read-only Google credential, and chose free reporting
+  first rather than paid AI execution.
+- Added a main-only, serialized GitHub-hosted biweekly reporting workflow. Kept
+  Vercel's existing Git deployment path and daily cloud health checks unchanged.
+- Added independent provider results, bounded execution, sanitized connection-only
+  output, a deduplicated attention issue, and a schedule-inactivity warning.
+- Raw reports remain in runner memory, not public artifacts/logs. No AI calls or
+  autonomous website edits are enabled. No measured SEO improvement is claimed.
+- Local live check: production health passed; Search Console available; Analytics
+  access denied. All 27 tests passed during preparation. Cloud cutover verification
+  will be reported using the actual GitHub run, not inferred from this local test.
+- Prior setup corrections: sitemap was submitted successfully September 20;
+  Google Cloud project/APIs and the private reporting key exist; Search Console
+  Restricted permission is saved and API-tested. Analytics Viewer attempts still
+  fail, including September 21. Marketing emails were declined. Those completed
+  setup steps supersede the earlier pending notes below.
+- No content experiment; existing post-installation observation dates are unchanged.
+
 ## 2026-09-20 — Baseline foundation
 
 - Status: initial release prepared; not yet a measured performance experiment.

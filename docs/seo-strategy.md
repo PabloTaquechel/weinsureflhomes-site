@@ -50,7 +50,7 @@ Start with Miami, where the agency has a real office and local experience. Do no
 
 Google Analytics Standard and Search Console are the measurement tools; Windsor.ai is not required. The collector uses Google's read-only APIs and requires one-time authentication/access setup. Do not enable paid billing or a paid analytics tier.
 
-The biweekly AI review is a Codex desktop heartbeat and uses the owner's Codex allowance. The computer must be awake, online and running Codex. GitHub Actions performs separate daily technical checks on GitHub's servers; it is not an always-on cloud AI optimizer. Public-repository standard runners are normally free; verify current account terms and never enable paid overages without permission. Scheduled Actions on inactive public repositories can be disabled by GitHub; inspect their status at every review.
+On September 21, the owner chose free cloud reporting first, deferring paid AI execution. `docs/seo-cloud.md` describes the biweekly GitHub-hosted reporting workflow and existing daily technical checks, neither of which needs the owner's computer. Vercel remains the website host. Pause the former desktop AI heartbeat after cloud verification; do not describe cloud reporting alone as an AI optimizer. Public-repository standard runners are normally free; verify current account terms and never enable paid overages without permission. Scheduled Actions on inactive public repositories can be disabled by GitHub; the reporting workflow warns about approaching inactivity limits.
 
 ## Sources
 

@@ -1,0 +1,79 @@
+name: Cloud SEO reporting
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "37 9 * * 1"
+      timezone: America/New_York
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloud-seo-reporting
+  cancel-in-progress: false
+
+jobs:
+  report:
+    if: github.repository == 'PabloTaquechel/weinsureflhomes-site' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      due: ${{ steps.cadence.outputs.due }}
+      status: ${{ steps.report.outputs.status }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "24"
+      - id: cadence
+        run: node scripts/seo-cloud-review.mjs --due
+      # No npm install, PR code, browser login, or third-party code with Google secrets.
+      # No private report artifacts: this repository is public.
+      - id: report
+        if: steps.cadence.outputs.due == 'true'
+        env:
+          SEO_GOOGLE_CREDENTIALS_JSON: ${{ secrets.SEO_GOOGLE_CREDENTIALS_JSON }}
+        run: node scripts/seo-cloud-review.mjs
+
+  notify:
+    needs: report
+    if: always() && needs.report.result != 'skipped' && (needs.report.outputs.due == 'true' || needs.report.result == 'failure')
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          REPORT_STATUS: ${{ needs.report.outputs.status }}
+        with:
+          script: |
+            const title = 'Cloud SEO reporting needs attention';
+            const allowed = new Set(['available', 'access_denied', 'rate_limited', 'unavailable']);
+            let input = {};
+            try { input = JSON.parse(process.env.REPORT_STATUS || '{}'); } catch {}
+            const health = input.health === 'passed' ? 'passed' : 'failed';
+            const analytics = allowed.has(input.analytics) ? input.analytics : 'unavailable';
+            const searchConsole = allowed.has(input.searchConsole) ? input.searchConsole : 'unavailable';
+            // GitHub may disable public-repo schedules after 60 inactive days.
+            // Warn before that deadline; do not silently manufacture keepalive commits.
+            const repo = await github.rest.repos.get(context.repo);
+            const inactiveDays = (Date.now() - Date.parse(repo.data.pushed_at)) / 86400000;
+            const scheduleWarning = !Number.isFinite(inactiveDays) || inactiveDays >= 45;
+            const fingerprint = `<!-- cloud-seo:${health}:${analytics}:${searchConsole}:${scheduleWarning} -->`;
+            const issues = await github.paginate(github.rest.issues.listForRepo, {...context.repo, state: 'open', creator: 'github-actions[bot]', per_page: 100});
+            const existing = issues.find(i => i.title === title && !i.pull_request && i.body?.includes('<!-- cloud-seo:'));
+            const good = health === 'passed' && analytics === 'available' && searchConsole === 'available' && !scheduleWarning;
+            const url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            if (good) {
+              if (existing) {
+                await github.rest.issues.createComment({...context.repo, issue_number: existing.number, body: `Reporting connections and health checks recovered. [Verified run](${url}). Automatic AI edits remain disabled pending separate setup.`});
+                await github.rest.issues.update({...context.repo, issue_number: existing.number, state: 'closed'});
+              }
+            } else if (!existing || !existing.body?.includes(fingerprint)) {
+              const body = `${fingerprint}\nCloud reporting requires attention.\n\n- Production health: ${health}\n- Analytics: ${analytics}\n- Search Console: ${searchConsole}\n- Schedule inactivity warning: ${scheduleWarning ? 'Review required: GitHub can disable public-repository schedules after 60 inactive days.' : 'none'}\n\nNo SEO changes were published. Missing reports are not zero traffic. AI editing remains disabled pending separate setup.\n\n[Inspect run](${url})`;
+              if (existing) await github.rest.issues.update({...context.repo, issue_number: existing.number, body});
+              else await github.rest.issues.create({...context.repo, title, body});
+            }

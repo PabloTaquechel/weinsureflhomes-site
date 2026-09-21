@@ -40,7 +40,7 @@ async function tokenFor(credentials) {
   return body.access_token;
 }
 
-export async function collectMetrics() {
+export async function collectMetricsReport() {
   const config = JSON.parse(
     await readFile(new URL("../src/config/measurement.json", import.meta.url), "utf8"),
   );
@@ -53,7 +53,9 @@ export async function collectMetrics() {
     join(homedir(), ".codex", "private", "weinsure-seo", "google-service-account.json");
   let credentials;
   try {
-    credentials = JSON.parse(await readFile(credentialPath, "utf8"));
+    credentials = JSON.parse(
+      process.env.SEO_GOOGLE_CREDENTIALS_JSON || (await readFile(credentialPath, "utf8")),
+    );
   } catch {
     throw new Error(
       "Metrics unavailable: the task-specific read-only Google service account is not configured. Missing metrics are NOT zero traffic.",
@@ -68,19 +70,35 @@ export async function collectMetrics() {
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
-    if (!response.ok)
-      throw new Error(
-        `Google reporting request failed (${response.status}); check API enablement and read-only property access`,
-      );
+    if (!response.ok) {
+      const error = new Error("Google reporting request failed");
+      error.status = response.status;
+      throw error;
+    }
     return response.json();
   }
-  const windows = reportingWindows();
+  return queryMetrics(query, config, reportingWindows());
+}
+
+// A provider outage must not conceal the other provider's results. Keep unavailable
+// values null, never fabricated zeroes. Error bodies may contain private data.
+export function reportingErrorCode(error) {
+  if (error?.status === 401 || error?.status === 403) return "access_denied";
+  if (error?.status === 429) return "rate_limited";
+  return "unavailable";
+}
+
+export async function queryMetrics(query, config, windows) {
   const report = {
     collectedAt: new Date().toISOString(),
     status: "available",
     provenance: "Google Search Console API and Google Analytics Data API",
     windows,
     properties: { ga4: config.ga4PropertyId, searchConsole: config.searchConsoleProperty },
+    sources: {
+      analytics: { status: "available" },
+      searchConsole: { status: "available" },
+    },
     periods: {},
   };
   for (const [label, range] of Object.entries(windows)) {
@@ -91,14 +109,23 @@ export async function collectMetrics() {
         stringFilter: { matchType: "EXACT", value: "Organic Search" },
       },
     };
-    const traffic = await query(gaURL, {
+    const attempt = async (source, url, body) => {
+      if (report.sources[source].status !== "available") return null;
+      try {
+        return await query(url, body);
+      } catch (error) {
+        report.sources[source] = { status: reportingErrorCode(error) };
+        return null;
+      }
+    };
+    const traffic = await attempt("analytics", gaURL, {
       dateRanges: [range],
       dimensions: [{ name: "landingPage" }],
       metrics: [{ name: "sessions" }, { name: "engagedSessions" }],
       dimensionFilter: organicFilter,
       limit: 10000,
     });
-    const conversions = await query(gaURL, {
+    const conversions = await attempt("analytics", gaURL, {
       dateRanges: [range],
       dimensions: [{ name: "pagePath" }, { name: "eventName" }],
       metrics: [{ name: "eventCount" }],
@@ -126,15 +153,19 @@ export async function collectMetrics() {
       limit: 10000,
     });
     const scURL = `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(config.searchConsoleProperty)}/searchAnalytics/query`;
-    const searchTotals = await query(scURL, { ...range, type: "web", dataState: "final" });
-    const searchPages = await query(scURL, {
+    const searchTotals = await attempt("searchConsole", scURL, {
+      ...range,
+      type: "web",
+      dataState: "final",
+    });
+    const searchPages = await attempt("searchConsole", scURL, {
       ...range,
       type: "web",
       dataState: "final",
       dimensions: ["page"],
       rowLimit: 25000,
     });
-    const searchQueries = await query(scURL, {
+    const searchQueries = await attempt("searchConsole", scURL, {
       ...range,
       type: "web",
       dataState: "final",
@@ -155,6 +186,15 @@ export async function collectMetrics() {
       ],
     };
   }
+  if (Object.values(report.sources).some((source) => source.status !== "available"))
+    report.status = "partial";
+  return report;
+}
+
+export async function collectMetrics() {
+  const report = await collectMetricsReport();
+  if (report.status !== "available")
+    throw new Error("Google reporting access is incomplete; no optimization is allowed");
   // Reports can contain search queries: never commit or upload them to public artifacts.
   await mkdir(".seo/private", { recursive: true });
   const file = `.seo/private/metrics-${report.collectedAt.slice(0, 10)}.json`;
